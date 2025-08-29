@@ -32,7 +32,6 @@ class DecryptTallyResponse(BaseModel):
 class CreateElectionModel(BaseModel):
     votazione_id: int
 
-VOTE_BASE = "https://aggregator-ynd5.onrender.com/api/authority/"
 
 class Authority:
     """
@@ -40,10 +39,10 @@ class Authority:
     """
 
     def __init__(self, keystore_path: str):
-        self.router = APIRouter()
+        self.router = APIRouter(prefix="/api/authority")
         self.store = FileKeyStore(keystore_path)
-        self.router.post(f"{VOTE_BASE}elections")(self.create_election)
-        self.router.post(f"{VOTE_BASE}elections/decrypt_tally")(self.decrypt_tally)
+        self.router.post("/elections")(self.create_election)
+        self.router.post("/elections/decrypt_tally")(self.decrypt_tally)
 
 
     async def create_election(self, request: Request, n_length: int = 2048, overwrite: bool = False) -> PublicKeyResponse:
